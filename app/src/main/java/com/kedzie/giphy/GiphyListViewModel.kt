@@ -17,16 +17,16 @@ import javax.inject.Inject
 @HiltViewModel
 class GiphyListViewModel @Inject constructor(val giphyPagerFactory: GiphyPagingSourceFactory): ViewModel() {
 
-    val query = MutableStateFlow("").debounce(1000)
+    val query = MutableStateFlow("")
 
     val rating = MutableStateFlow(Rating.G)
 
     val gifPager = query.combine(rating) { q, r -> q to r }
+        .debounce(1000)
         .flatMapLatest { (q, r) ->
             println("Combining $q, $r")
-            Pager(PagingConfig(pageSize = 20, prefetchDistance = 5, enablePlaceholders = false, maxSize = 100)) {
+            Pager(PagingConfig(pageSize = 20, initialLoadSize = 20, prefetchDistance = 5, enablePlaceholders = false, maxSize = 100)) {
                 giphyPagerFactory.create(q, r, "en")
             }.flow
-                .cachedIn(viewModelScope)
-        }
+        }.cachedIn(viewModelScope)
 }

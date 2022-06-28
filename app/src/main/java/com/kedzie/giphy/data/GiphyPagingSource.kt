@@ -44,6 +44,7 @@ class GiphyPagingSource @AssistedInject constructor(val giphyService: GiphyServi
             }
 
             if (response.meta.status == 200) {
+                println("First item ${response.data.first().id}")
                 val isLastPage = response.pagination.offset + params.loadSize > response.pagination.total_count
                 LoadResult.Page(
                     data = response.data,

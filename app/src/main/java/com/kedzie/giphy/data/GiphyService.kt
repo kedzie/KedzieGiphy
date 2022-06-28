@@ -2,6 +2,7 @@ package com.kedzie.giphy.data
 
 import com.kedzie.giphy.BuildConfig
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface GiphyService {
@@ -23,4 +24,7 @@ interface GiphyService {
                        @Query("q") query: String = ""
     ): GiphySearchResponse
 
+    @GET("gifs/{id}")
+    suspend fun detail(@Path("id") id: String,
+                       @Query("apiKey") apiKey: String = BuildConfig.GIPHY_APP_ID): GiphyDetailResponse
 }

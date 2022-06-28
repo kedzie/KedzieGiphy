@@ -5,6 +5,13 @@ import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.ToJson
 
+
+sealed class UiState<T> {
+    data class Ok<T> (val data: T): UiState<T>()
+    class Loading<T>() : UiState<T>()
+    data class Error<T>(val msg: String) : UiState<T>()
+}
+
 @JsonClass(generateAdapter = true)
 data class GiphySearchResponse(
     val data: List<Gif>,
@@ -13,10 +20,14 @@ data class GiphySearchResponse(
 )
 
 @JsonClass(generateAdapter = true)
+data class GiphyDetailResponse(
+    val data: Gif,
+    val meta: Meta
+)
+
+@JsonClass(generateAdapter = true)
 data class Gif(
-    val type: String,
     val id: String,
-    val url: String,
     val rating: Rating,
     val images: Images
 )
