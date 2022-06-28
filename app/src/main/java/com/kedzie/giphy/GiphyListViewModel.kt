@@ -1,5 +1,6 @@
 package com.kedzie.giphy
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -8,10 +9,7 @@ import androidx.paging.cachedIn
 import com.kedzie.giphy.data.GiphyPagingSourceFactory
 import com.kedzie.giphy.data.Rating
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,4 +27,8 @@ class GiphyListViewModel @Inject constructor(val giphyPagerFactory: GiphyPagingS
                 giphyPagerFactory.create(q, r, "en")
             }.flow
         }.cachedIn(viewModelScope)
+        .onStart { isLoading.value = true }
+        .onEach { isLoading.value = false }
+
+    val isLoading = mutableStateOf(true)
 }
