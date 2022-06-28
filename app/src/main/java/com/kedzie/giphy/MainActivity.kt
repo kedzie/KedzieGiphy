@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
         val navController = rememberNavController()
 
         NavHost(navController = navController, startDestination = "list") {
-            composable("list") { backStackEntry -> GiphyListScreen(hiltViewModel(backStackEntry)) { gif -> navController.navigate("detail/${URLEncoder.encode(gif.images.downsized_medium.url, "utf-8")}") } }
+            composable("list") { backStackEntry -> GiphyListScreen(hiltViewModel(backStackEntry), imageLoader) { gif -> navController.navigate("detail/${URLEncoder.encode(gif.images.downsized_medium.url, "utf-8")}") } }
 
             composable("detail/{url}") { backStackEntry -> DetailScreen(url = URLDecoder.decode(backStackEntry.arguments?.getString("url")!!, "utf-8"), imageLoader)}
         }

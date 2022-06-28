@@ -1,6 +1,9 @@
 package com.kedzie.giphy.ui.screen
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
@@ -9,19 +12,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.ImageLoader
+import coil.compose.SubcomposeAsyncImage
 import com.kedzie.giphy.data.Gif
-import com.kedzie.giphy.data.Image
-import com.kedzie.giphy.data.Images
-import com.kedzie.giphy.data.Rating
-import com.kedzie.giphy.ui.theme.KedzieGiphyTheme
 
 @Composable
 fun GiphyItem(item: Gif,
+              imageLoader: ImageLoader,
               modifier: Modifier = Modifier) {
     Row(modifier = modifier.padding(16.dp)) {
-        Text(text = item.id,)
+        SubcomposeAsyncImage(
+            modifier = Modifier,
+            model = item.images.fixed_height.url,
+            imageLoader = imageLoader,
+            loading = {
+                CircularProgressIndicator()
+            },
+            contentDescription = "giphy image"
+        )
     }
 }
 
@@ -68,24 +77,6 @@ fun ErrorItem(
         )
         OutlinedButton(onClick = onClickRetry) {
             Text(text = "Try again")
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ItemPreview() {
-    KedzieGiphyTheme {
-        Column {
-            GiphyItem(
-                Gif(
-                    id = "dumbid", images = Images(
-                        fixed_height = Image("http://bullshit", 200, 200),
-                        downsized_medium = Image("http://bullshit", 200, 200)
-                    ), rating = Rating.G
-                )
-            )
-            LoadingItem()
         }
     }
 }

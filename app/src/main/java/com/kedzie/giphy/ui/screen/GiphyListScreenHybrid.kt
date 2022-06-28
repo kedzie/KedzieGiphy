@@ -22,6 +22,7 @@ import androidx.paging.compose.itemsIndexed
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
+import coil.ImageLoader
 import com.kedzie.giphy.GiphyListViewModel
 import com.kedzie.giphy.data.Gif
 import com.kedzie.giphy.legacy.GifAdapter
@@ -31,7 +32,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @Composable
-fun GiphyListScreenHybrid(viewModel: GiphyListViewModel, onClick: (Gif) -> Unit) {
+fun GiphyListScreenHybrid(viewModel: GiphyListViewModel, imageLoader: ImageLoader, onClick: (Gif) -> Unit) {
 
     val queryState = produceState(viewModel.query.value) {
         viewModel.query.collect {
@@ -112,7 +113,7 @@ fun GiphyListScreenHybrid(viewModel: GiphyListViewModel, onClick: (Gif) -> Unit)
 
             items(lazyPagingItems) {
                 it?.let { gif ->
-                    GiphyItem(gif, modifier = Modifier.clickable { onClick(gif) })
+                    GiphyItem(gif, imageLoader,  modifier = Modifier.clickable { onClick(gif) })
                 } ?: LoadingItem().also { println("placeholder")}
             }
 

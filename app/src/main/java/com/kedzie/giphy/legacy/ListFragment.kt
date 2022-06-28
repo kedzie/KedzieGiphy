@@ -16,6 +16,7 @@ import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kedzie.giphy.GiphyListViewModel
@@ -56,7 +57,7 @@ class ListFragment : Fragment() {
             super.onViewCreated(view, savedInstanceState)
 
             binding.queryText.editText?.addTextChangedListener { viewModel.query.value = it.toString() }
-            binding.giphyList.layoutManager = LinearLayoutManager(view.context)
+            binding.giphyList.layoutManager = GridLayoutManager(view.context, 3)
             binding.giphyList.adapter = pagerAdapter.withLoadStateHeaderAndFooter(
                 GifLoadStateAdapter(pagerAdapter::retry),
                 GifLoadStateAdapter(pagerAdapter::retry))
