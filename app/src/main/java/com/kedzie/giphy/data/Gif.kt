@@ -1,16 +1,9 @@
 package com.kedzie.giphy.data
 
-import androidx.compose.ui.text.toUpperCase
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.ToJson
 
-
-sealed class UiState<T> {
-    data class Ok<T> (val data: T): UiState<T>()
-    class Loading<T>() : UiState<T>()
-    data class Error<T>(val msg: String) : UiState<T>()
-}
 
 @JsonClass(generateAdapter = true)
 data class GiphySearchResponse(

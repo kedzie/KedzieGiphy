@@ -9,11 +9,12 @@ import androidx.paging.cachedIn
 import com.kedzie.giphy.data.GiphyPagingSourceFactory
 import com.kedzie.giphy.data.Rating
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
-class GiphyListViewModel @Inject constructor(val giphyPagerFactory: GiphyPagingSourceFactory): ViewModel() {
+class GiphyListViewModel @Inject constructor(private val giphyPagerFactory: GiphyPagingSourceFactory): ViewModel() {
 
     val query = MutableStateFlow("")
 
@@ -23,7 +24,7 @@ class GiphyListViewModel @Inject constructor(val giphyPagerFactory: GiphyPagingS
         .debounce(1000)
         .flatMapLatest { (q, r) ->
             println("Combining $q, $r")
-            Pager(PagingConfig(pageSize = 20, initialLoadSize = 20, prefetchDistance = 5, enablePlaceholders = false, maxSize = 100)) {
+            Pager(PagingConfig(pageSize = 20, prefetchDistance = 0, enablePlaceholders = true, maxSize = 200)) {
                 giphyPagerFactory.create(q, r, "en")
             }.flow
         }.onStart { isLoading.value = true }

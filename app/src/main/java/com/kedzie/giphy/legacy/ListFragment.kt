@@ -29,6 +29,7 @@ import com.kedzie.giphy.GiphyListViewModel
 import com.kedzie.giphy.R
 import com.kedzie.giphy.data.Gif
 import com.kedzie.giphy.databinding.FragmentListBinding
+import com.kedzie.giphy.ui.screen.ErrorItem
 import com.kedzie.giphy.ui.screen.GiphyItem
 import com.kedzie.giphy.ui.screen.GiphyListScreen
 import com.kedzie.giphy.ui.screen.LoadingItem
@@ -61,7 +62,7 @@ class ListFragment : Fragment() {
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
-        ): View? = with(FragmentListBinding.inflate(inflater, container, false)) {
+        ): View = with(FragmentListBinding.inflate(inflater, container, false)) {
             _binding = this
             root
         }
@@ -70,9 +71,20 @@ class ListFragment : Fragment() {
             super.onViewCreated(view, savedInstanceState)
 
             binding.composeView.setContent {
-                QueryControls(viewModel)
+                KedzieGiphyTheme {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colors.background
+                    ) {
+                        GiphyListScreen(viewModel)
+                    }
+                }
             }
 
+            /*
+              Used native views here as compose-paging doesn't support grid views yet,
+              and the list view is buggy for infinite lists
+             */
             binding.giphyList.layoutManager = GridLayoutManager(view.context, 3)
             binding.giphyList.adapter = pagerAdapter.withLoadStateHeaderAndFooter(
                 GifLoadStateAdapter(pagerAdapter::retry),
@@ -112,7 +124,7 @@ class ListFragment : Fragment() {
                 composeView.setContent {
                     item?.let { gif ->
                         GiphyItem(gif, imageLoader, modifier = Modifier.clickable { onClick(gif) })
-                    } ?: LoadingItem().also { println("placeholder")}
+                    } ?: LoadingItem()
                 }
             }
         }
@@ -126,29 +138,16 @@ class ListFragment : Fragment() {
     }
 
 
-    class LoadStateViewHolder(parent: ViewGroup, private val retry: () -> Unit): RecyclerView.ViewHolder(TextView(parent.context)) {
+    class LoadStateViewHolder(parent: ViewGroup, private val retry: () -> Unit): RecyclerView.ViewHolder(ComposeView(parent.context)) {
 
         fun bind(loadState: LoadState)  {
-            (itemView as TextView).text = when(loadState) {
-                is LoadState.Error -> loadState.error.localizedMessage
-                is LoadState.Loading -> "Loading..."
-                else -> "Not Loading"
+            (itemView as ComposeView).setContent {
+                when(loadState) {
+                    is LoadState.Error -> ErrorItem(loadState.error.localizedMessage ?: "Error") { retry() }
+                    is LoadState.Loading -> LoadingItem()
+                    else -> {}
+                }
             }
-            if (loadState is LoadState.Error) {
-                itemView.setOnClickListener { retry()  }
-            }
-        }
-    }
-}
-
-@Composable
-fun QueryControls(viewModel: GiphyListViewModel) {
-    KedzieGiphyTheme {
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colors.background
-        ) {
-            GiphyListScreen(viewModel)
         }
     }
 }
