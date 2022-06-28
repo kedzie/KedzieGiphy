@@ -1,6 +1,8 @@
 package com.kedzie.giphy.ui.screen
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -8,6 +10,8 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import com.kedzie.giphy.GiphyListViewModel
 import com.kedzie.giphy.data.Rating
@@ -20,13 +24,18 @@ fun GiphyListScreen(viewModel: GiphyListViewModel) {
         }
     }
 
+    val focusManager = LocalFocusManager.current
+
     Row(Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(Dp(4f)),
         verticalAlignment = Alignment.CenterVertically) {
         OutlinedTextField(
             value = queryState.value,
             onValueChange = { viewModel.query.value = it },
-            label = { Text("Query") }
+            label = { Text("Query") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions { focusManager.clearFocus() }
         )
 
         var expanded = remember { mutableStateOf(false) }
