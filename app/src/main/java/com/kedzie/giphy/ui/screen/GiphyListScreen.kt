@@ -1,18 +1,16 @@
 package com.kedzie.giphy.ui.screen
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import com.kedzie.giphy.GiphyListViewModel
+import com.kedzie.giphy.data.Rating
 
 @Composable
 fun GiphyListScreen(viewModel: GiphyListViewModel) {
@@ -22,14 +20,36 @@ fun GiphyListScreen(viewModel: GiphyListViewModel) {
         }
     }
 
-    Column (Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(Dp(4f))) {
-        Row(Modifier.fillMaxWidth()) {
-            OutlinedTextField(
-                value = queryState.value,
-                onValueChange = { viewModel.query.value = it },
-                label = { Text("Query") }
-            )
+    Row(Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(Dp(4f)),
+        verticalAlignment = Alignment.CenterVertically) {
+        OutlinedTextField(
+            value = queryState.value,
+            onValueChange = { viewModel.query.value = it },
+            label = { Text("Query") }
+        )
+
+        var expanded = remember { mutableStateOf(false) }
+
+        Box(modifier = Modifier.wrapContentSize()) {
+            OutlinedButton(onClick = { expanded.value = true }) {
+                Text(viewModel.rating.value.name)
+            }
+            DropdownMenu(
+                expanded = expanded.value,
+                onDismissRequest = { expanded.value = false }
+            ) {
+                for (rating in Rating.values()) {
+                    DropdownMenuItem(onClick = {
+                        expanded.value = false
+                        viewModel.rating.value = rating
+                    }) {
+                        Text(rating.name)
+                    }
+                }
+            }
         }
+
         if (viewModel.isLoading.value) {
             CircularProgressIndicator()
         }

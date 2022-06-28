@@ -26,9 +26,10 @@ class GiphyListViewModel @Inject constructor(val giphyPagerFactory: GiphyPagingS
             Pager(PagingConfig(pageSize = 20, initialLoadSize = 20, prefetchDistance = 5, enablePlaceholders = false, maxSize = 100)) {
                 giphyPagerFactory.create(q, r, "en")
             }.flow
-        }.cachedIn(viewModelScope)
-        .onStart { isLoading.value = true }
+        }.onStart { isLoading.value = true }
         .onEach { isLoading.value = false }
+        .cachedIn(viewModelScope)
+
 
     val isLoading = mutableStateOf(true)
 }
