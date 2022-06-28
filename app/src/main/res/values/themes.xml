@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.KedzieGiphy" parent="android:Theme.Material.Light.NoActionBar">
+<!--    <style name="Theme.KedzieGiphy" parent="android:Theme.Material.NoActionBar">-->
+<!--        <item name="android:statusBarColor">@color/purple_700</item>-->
+<!--    </style>-->
+
+    <style name="Theme.KedzieGiphy" parent="@style/Theme.MaterialComponents.DayNight">
         <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="statusBarBackground">@color/purple_700</item>
     </style>
 
     <style name="Theme.KedzieGiphy.NoActionBar">

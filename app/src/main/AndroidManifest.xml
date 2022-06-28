@@ -16,22 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KedzieGiphy"
         tools:targetApi="31">
-<!--        <activity-->
-<!--            android:name=".MainActivity"-->
-<!--            android:exported="true"-->
-<!--            android:label="@string/title_activity_compose"-->
-<!--            android:theme="@style/Theme.KedzieGiphy">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
 
         <activity
             android:name=".legacy.MainActivity2"
             android:exported="true"
-            android:label="@string/title_activity_legacy"
-            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar">
+            android:label="@string/title_activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

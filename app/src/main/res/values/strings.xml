@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">KedzieGiphyCompose</string>
-    <string name="title_activity_compose">KedzieGiphyLegacy</string>
-    <string name="title_activity_legacy">KedzieGiphyLegacy</string>
+    <string name="title_activity">KedzieGiphy</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">Giphy List</string>
     <string name="second_fragment_label">Giphy Details</string>

@@ -6,6 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.widget.addTextChangedListener
@@ -28,7 +38,9 @@ import com.kedzie.giphy.R
 import com.kedzie.giphy.data.Gif
 import com.kedzie.giphy.databinding.FragmentListBinding
 import com.kedzie.giphy.ui.screen.GiphyItem
+import com.kedzie.giphy.ui.screen.GiphyListScreen
 import com.kedzie.giphy.ui.screen.LoadingItem
+import com.kedzie.giphy.ui.theme.KedzieGiphyTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -65,7 +77,10 @@ class ListFragment : Fragment() {
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
 
-            binding.queryText.editText?.addTextChangedListener { viewModel.query.value = it.toString() }
+            binding.composeView.setContent {
+                QueryControls(viewModel)
+            }
+
             binding.giphyList.layoutManager = GridLayoutManager(view.context, 3)
             binding.giphyList.adapter = pagerAdapter.withLoadStateHeaderAndFooter(
                 GifLoadStateAdapter(pagerAdapter::retry),
@@ -132,6 +147,12 @@ class ListFragment : Fragment() {
             }
         }
     }
+}
 
+@Composable
+fun QueryControls(viewModel: GiphyListViewModel) {
+    KedzieGiphyTheme {
+        GiphyListScreen(viewModel)
+    }
 }
 
