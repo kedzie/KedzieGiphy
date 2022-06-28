@@ -152,7 +152,12 @@ class ListFragment : Fragment() {
 @Composable
 fun QueryControls(viewModel: GiphyListViewModel) {
     KedzieGiphyTheme {
-        GiphyListScreen(viewModel)
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colors.background
+        ) {
+            GiphyListScreen(viewModel)
+        }
     }
 }
 
