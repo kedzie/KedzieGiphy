@@ -22,21 +22,15 @@ import com.kedzie.giphy.ui.theme.KedzieGiphyTheme
 fun GiphyListScreen(viewModel: GiphyListViewModel) {
     GiphyListScreenInner(
         queryState = produceState(viewModel.query.value) {
-            viewModel.query.collect {
-                value= it
-            }
+            viewModel.query.collect { value= it }
         },
         onQueryChange = { viewModel.query.value = it },
         ratingState = produceState(viewModel.rating.value) {
-            viewModel.rating.collect {
-                value= it
-            }
+            viewModel.rating.collect { value= it }
         },
         onRatingChange = { viewModel.rating.value = it },
         langState = produceState(viewModel.lang.value) {
-            viewModel.lang.collect {
-                value= it
-            }
+            viewModel.lang.collect { value= it }
         },
         onLangChange = { viewModel.lang.value = it },
         languages = viewModel.languages,
