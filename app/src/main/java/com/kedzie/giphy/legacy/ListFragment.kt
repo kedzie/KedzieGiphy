@@ -4,12 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
@@ -39,7 +37,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * A simple [Fragment] subclass as the default destination in the navigation.
+ * Giphy list fragment which displays a grid of GIPHY trending/search results.
+ * Uses hybrid approach of legacy views with jetpack compose.  bc jetpack compose paging
+ * integration is alpha version which doesn't support grid, and is buggy when used with
+ * `maxSize`.  Since we have a lot of results potentially i wanted to avoid memory issues
+ * and used the maxSize parameter in the paging.
  */
 @AndroidEntryPoint
 class ListFragment : Fragment() {
@@ -107,8 +109,8 @@ class ListFragment : Fragment() {
             _binding = null
         }
 
-    inner class GifAdapter(val onClickListener: (Gif) -> Unit) : PagingDataAdapter<Gif, GifViewHolder>(GifComparator) {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GifViewHolder = GifViewHolder(parent, onClickListener)
+    inner class GifAdapter(private val onClick: (Gif) -> Unit) : PagingDataAdapter<Gif, GifViewHolder>(GifComparator) {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GifViewHolder = GifViewHolder(parent, onClick)
         override fun onBindViewHolder(holder: GifViewHolder, position: Int) = holder.bind(getItem(position))
     }
 

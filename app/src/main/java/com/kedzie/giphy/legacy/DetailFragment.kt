@@ -4,15 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.ui.Modifier
 import androidx.fragment.app.Fragment
 import coil.ImageLoader
 import com.kedzie.giphy.databinding.FragmentDetailBinding
 import com.kedzie.giphy.ui.screen.DetailScreen
+import com.kedzie.giphy.ui.theme.KedzieGiphyTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /**
- * A simple [Fragment] subclass as the second destination in the navigation.
+ * Fragment showing full screen GIPHY image.  takes URL as parameter.  Could expand this to take
+ * ID as parameter and fetch the GIPHY for deeplink support where the list data isn't available.
+ * Could also display more information like the GIPHY title, links, etc..
  */
 @AndroidEntryPoint
 class DetailFragment : Fragment() {
@@ -26,7 +33,7 @@ class DetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View?  = with(FragmentDetailBinding.inflate(inflater, container, false)) {
+    ): View  = with(FragmentDetailBinding.inflate(inflater, container, false)) {
         _binding = this
         root
     }
@@ -35,7 +42,14 @@ class DetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.composeView.setContent {
-            DetailScreen(url = arguments!!.getString("url")!!, imageLoader = imageLoader)
+            KedzieGiphyTheme {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colors.background
+                ) {
+                    DetailScreen(url = arguments!!.getString("url")!!, imageLoader = imageLoader)
+                }
+            }
         }
     }
 

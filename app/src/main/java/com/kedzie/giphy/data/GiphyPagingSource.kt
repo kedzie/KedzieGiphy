@@ -7,23 +7,26 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 
-class GiphyPagingSource @AssistedInject constructor(val giphyService: GiphyService,
+/**
+ * Handles paging for Giphy list responses. trending/search.
+ * Uses assisted inject for dependencies as it has passed in arguments for
+ * query parameters.
+ */
+class GiphyPagingSource @AssistedInject constructor(private val giphyService: GiphyService,
                                                     @Assisted("query") val query: String,
                                                     @Assisted("rating") val rating: Rating,
                                                     @Assisted("lang") val lang: String):
     PagingSource<Int, Gif>() {
 
-    override fun getRefreshKey(state: PagingState<Int, Gif>): Int? {
-
-        return state.anchorPosition?.let { anchorPosition ->
-            val anchorPage = state.closestPageToPosition(anchorPosition)
-            println("getRefreshKey anchorPosition: ${state.anchorPosition}, anchorPage: ${anchorPage}")
-            anchorPage?.itemsBefore
+    override fun getRefreshKey(state: PagingState<Int, Gif>): Int?
+        = state.anchorPosition?.let { anchorPosition ->
+            state.closestPageToPosition(anchorPosition)?.also { anchorPage ->
+                println("getRefreshKey anchorPosition: ${state.anchorPosition}, anchorPage: $anchorPage")
+            }?.itemsBefore
         }
-    }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Gif> {
-        return try {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Gif>
+        = try {
             val nextItem = params.key ?: 0
 
             val response = if(query.isEmpty()) {
@@ -64,7 +67,6 @@ class GiphyPagingSource @AssistedInject constructor(val giphyService: GiphyServi
             Log.e("GiphyPagingSource", "error", e)
             LoadResult.Error(e)
         }
-    }
 }
 
 @AssistedFactory

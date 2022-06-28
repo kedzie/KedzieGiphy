@@ -15,6 +15,9 @@ import com.kedzie.giphy.GiphyListViewModel
 import com.kedzie.giphy.data.Rating
 import com.kedzie.giphy.ui.theme.KedzieGiphyTheme
 
+/**
+ * Links GiphyListScreenInner with GiphyListViewModel
+ */
 @Composable
 fun GiphyListScreen(viewModel: GiphyListViewModel) {
     GiphyListScreenInner(
@@ -30,14 +33,27 @@ fun GiphyListScreen(viewModel: GiphyListViewModel) {
             }
         },
         onRatingChange = { viewModel.rating.value = it },
+        langState = produceState(viewModel.lang.value) {
+            viewModel.lang.collect {
+                value= it
+            }
+        },
+        onLangChange = { viewModel.lang.value = it },
+        languages = viewModel.languages,
         isLoading = viewModel.isLoading.value)
 }
 
+/**
+ * Reusable view for query controls
+ */
 @Composable
 fun GiphyListScreenInner(queryState: State<String> = remember { mutableStateOf("") },
                          onQueryChange: (String)->Unit = {},
                          ratingState: State<Rating> = remember { mutableStateOf(Rating.G) },
                          onRatingChange: (Rating)->Unit = {},
+                         langState: State<String> = remember { mutableStateOf("en") },
+                         onLangChange: (String)->Unit = {},
+                         languages: List<String> = listOf("en"),
                          isLoading: Boolean = false) {
     val focusManager = LocalFocusManager.current
 
@@ -69,11 +85,10 @@ fun GiphyListScreenInner(queryState: State<String> = remember { mutableStateOf("
             horizontalArrangement = Arrangement.spacedBy(Dp(4f)),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val expanded = remember { mutableStateOf(false) }
-
             Text("Rating:")
 
             Box(modifier = Modifier.wrapContentSize()) {
+                val expanded = remember { mutableStateOf(false) }
                 OutlinedButton(onClick = { expanded.value = true }) {
                     Text(ratingState.value.name)
                 }
@@ -91,10 +106,32 @@ fun GiphyListScreenInner(queryState: State<String> = remember { mutableStateOf("
                     }
                 }
             }
+
+            Text("Lang:")
+
+            Box(modifier = Modifier.wrapContentSize()) {
+                val expanded = remember { mutableStateOf(false) }
+                OutlinedButton(onClick = { expanded.value = true }) {
+                    Text(langState.value)
+                }
+                DropdownMenu(
+                    expanded = expanded.value,
+                    onDismissRequest = { expanded.value = false }
+                ) {
+                    for (lang in languages) {
+                        DropdownMenuItem(onClick = {
+                            expanded.value = false
+                            onLangChange(lang)
+                        }) {
+                            Text(lang)
+                        }
+                    }
+                }
+            }
         }
 
         if (isLoading) {
-            CircularProgressIndicator()
+            LoadingView()
         }
     }
 }

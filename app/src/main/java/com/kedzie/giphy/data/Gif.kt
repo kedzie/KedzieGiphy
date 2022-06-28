@@ -4,6 +4,10 @@ import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.ToJson
 
+/**
+ Moshi Domain models to represent Giphy responses
+ */
+
 
 @JsonClass(generateAdapter = true)
 data class GiphySearchResponse(

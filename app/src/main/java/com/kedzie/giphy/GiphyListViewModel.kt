@@ -1,5 +1,6 @@
 package com.kedzie.giphy
 
+import android.content.res.Resources
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,23 +15,36 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
-class GiphyListViewModel @Inject constructor(private val giphyPagerFactory: GiphyPagingSourceFactory): ViewModel() {
+class GiphyListViewModel @Inject constructor(private val giphyPagerFactory: GiphyPagingSourceFactory,
+                                             resources: Resources): ViewModel() {
+
+    val languages = List<String>(resources.configuration.locales.size()) {
+        resources.configuration.locales[it].language
+    }
+
+    val lang = MutableStateFlow(resources.configuration.locales[0].language)
 
     val query = MutableStateFlow("")
 
     val rating = MutableStateFlow(Rating.G)
 
-    val gifPager = query.combine(rating) { q, r -> q to r }
+    val gifPager = combine(query, rating, lang) { q, r, l -> Triple(q, r, l) }
         .debounce(1000)
-        .flatMapLatest { (q, r) ->
-            println("Combining $q, $r")
-            Pager(PagingConfig(pageSize = 20, prefetchDistance = 0, enablePlaceholders = true, maxSize = 200)) {
-                giphyPagerFactory.create(q, r, "en")
+        .onEach {
+            println("Loading = true")
+            isLoading.value = true
+        }
+        .flatMapLatest { (q, r, l) ->
+            println("Combining $q, $r, $l")
+            Pager(PagingConfig(pageSize = 40, prefetchDistance = 0, enablePlaceholders = true, maxSize = 200)) {
+                giphyPagerFactory.create(q, r, l)
             }.flow
-        }.onStart { isLoading.value = true }
-        .onEach { isLoading.value = false }
+        }
+        .onEach {
+            isLoading.value = false
+            println("loading = false")
+        }
         .cachedIn(viewModelScope)
-
 
     val isLoading = mutableStateOf(true)
 }

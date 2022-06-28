@@ -5,6 +5,9 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+/**
+ * Giphy API service definition via Retrofit
+ */
 interface GiphyService {
 
     @GET("gifs/trending")
@@ -24,6 +27,9 @@ interface GiphyService {
                        @Query("q") query: String = ""
     ): GiphySearchResponse
 
+    //unused.  If we needed deeplink support for Giphy we could add it and have a version of detail
+    //screen which takes ID as parameter instead of just the url.  could then add more advanced features
+    //like sharing different sized images/showing the title.
     @GET("gifs/{id}")
     suspend fun detail(@Path("id") id: String,
                        @Query("apiKey") apiKey: String = BuildConfig.GIPHY_APP_ID): GiphyDetailResponse

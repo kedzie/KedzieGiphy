@@ -18,10 +18,16 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
+/**
+ * Hilt dependency injection module
+ */
 @InstallIn(SingletonComponent::class)
 @Module
 class GiphyModule {
 
+    /**
+     * retrofit service to invoke Giphy API
+     */
     @Provides
     fun getGiphyService(): GiphyService
         = Retrofit.Builder()
@@ -32,10 +38,11 @@ class GiphyModule {
                 .add(RatingAdapter())
                 .build()))
             .build()
-            .let {
-                it.create(GiphyService::class.java)
-            }
+        .create(GiphyService::class.java)
 
+    /**
+     * Coil Image loader to async load all images. Configured to support animated GIF
+     */
     @Provides
     fun getImageLoader(@ApplicationContext context: Context): ImageLoader =
        ImageLoader.Builder(context)
@@ -52,6 +59,9 @@ class GiphyModule {
                }
            }.build()
 
+    /**
+     * Used to get device locales in the GiphyListViewModel
+     */
     @Provides
     fun getResources(@ApplicationContext appContext: Context) : Resources
         = appContext.resources
